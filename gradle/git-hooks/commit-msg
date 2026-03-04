@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo "Running Commit-msg hooks"
+# regex to validate in commit msg
+# card number format: '#123 commit message'
+commit_regex='(#\d+)(.*)'
+error_msg="Aborting commit. Your commit message is missing a card number '#123 commit message' "
+
+if ! grep -iqE "$commit_regex" "$1"; then
+    echo "$error_msg" >&2
+    exit 1
+fi
+
+echo "Commit-msg hooks passed."

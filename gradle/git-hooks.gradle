@@ -1,0 +1,19 @@
+/****************************************************************/
+/*                   Git hooks gradle file                        */
+/****************************************************************/
+
+tasks.register('installGitHooks',Copy) {
+    description = 'Install the Git hooks'
+    group = 'build'
+    from('gradle/git-hooks')
+    into('.git/hooks')
+    filePermissions {
+        user {
+            read = true
+            execute = true
+        }
+        other.execute = false
+    }
+}
+
+compileJava.dependsOn installGitHooks

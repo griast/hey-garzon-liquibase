@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Running Pre-commit hooks"
+./gradlew qualityGate
+if [ $? -ne 0 ]; then
+    echo "ERROR: Quality gate check failed."
+    echo "       Fix the errors before committing."
+    exit 1
+fi
+
+echo "Pre-commit hooks passed."

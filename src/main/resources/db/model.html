@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Quote & Book Mermaid ERD</title>
+   <link rel="icon" href="https://mermaid.js.org/favicon.ico">
+</head>
+
+
+<body>
+   <h1>Quote & Book Entity Relationship Diagram</h1>
+   <p>Visit <a href="https://mermaid.js.org/syntax/entityRelationshipDiagram.html#relationship-syntax">Mermaid</a> for
+       more information about the diagram</p>
+   <div class="mermaid">
+    erDiagram
+    user ||--o{ user_role : "admin"
+    role ||--o{ user_role : "assign a"
+    business ||--|{ business_user : "has many"
+    user ||--|{ business_user : "admin"
+    business ||--o{ product : "has many"
+    business ||--o{ category : "has many"
+    business ||--|{ theme : "choose a"
+    category ||--o{ product : "group"
+    
+    user {
+        uuid id pk
+        text name "user name"
+        text email "user email address"
+    }
+
+    role {
+        uuid id pk
+        text name "rol name"
+    }
+
+    user_role {
+        uuid id pk
+        uuid id_user fk "user id"
+        uuid id_role fk "role id"
+    }
+
+    theme {
+        uuid id pk
+        text name "theme name"
+    }
+
+    business {
+        uuid id pk
+        uuid id_theme fk "theme id"
+        text name "business name"
+        text phone "coma separated phones"
+        text mail "email address"
+        text logo "logo url"
+    }
+
+    business_user {
+        uuid id pk
+        uuid id_user fk "user id"
+        uuid id_business fk "business id"
+    }
+
+    category {
+        uuid id
+        uuid id_business fk "business id"
+        number index "position"
+    }
+    
+    product {
+        uuid id
+        uuid id_business fk "business id"
+        uuid id_category fk "category id"
+        text name_es "spanish name"
+        text description_es "spanish description"
+        text ingredients_es "spanish ingredients"
+        bool is_visible "is visible on ui"
+        number price "price CLP"
+        text image_url "image url"
+    }
+
+   </div>
+   <script type="module">
+       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+       mermaid.initialize({ startOnLoad: true });
+   </script>
+</body>
+
+
+</html>
+

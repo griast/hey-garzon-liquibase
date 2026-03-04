@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: liquibase
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/heygarzon}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+  liquibase:
+    dropFirst: ${LIQUIBASE_DROP_FIRST:false}

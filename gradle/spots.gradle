@@ -1,0 +1,30 @@
+/****************************************************************/
+/*                   Spotless gradle file                        */
+/****************************************************************/
+
+spotless {
+  java {
+      importOrder()
+      removeUnusedImports()
+      cleanthat()
+      googleJavaFormat()
+      formatAnnotations()
+  }
+  yaml {
+    target '**/*.yaml'
+    endWithNewline()
+  }
+}
+
+tasks.register('qualityGate') {
+    description = 'Check the quality of the code'
+    group = 'verification'
+    
+    dependsOn spotlessYamlCheck
+    dependsOn spotlessCheck
+    doLast {
+        if (spotlessCheck.state.failure || spotlessYamlCheck.state.failure) {
+            throw new RuntimeException("Quality gate check failed")
+        }
+    }
+}
