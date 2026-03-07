@@ -537,3 +537,61 @@ databaseChangeLog:
             sql: |
               DELETE FROM public.user_role WHERE id_user IN (SELECT id FROM public."user" WHERE email = 'user1@gmail.com');
               DELETE FROM public.user WHERE email = 'user1@gmail.com';
+
+  - changeSet:
+      id: create-otp-code-table-v1.0.10
+      author: gustavo.alexis.ra@gmail.com
+      changes:
+        - tagDatabase:
+            tag: v1.0.10
+        - createTable:
+            schemaName: public
+            tableName: otp_code
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "otp_code unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: user_id
+                  type: UUID
+                  remarks: "user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_otp_code_user
+                    referencedTableName: "user"
+                    referencedColumnNames: id
+              - column:
+                  name: otp_code
+                  type: VARCHAR(6)
+                  remarks: "6-character alphanumeric OTP code"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  remarks: "expiration timestamp in UTC"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_used
+                  type: BOOLEAN
+                  remarks: "whether the OTP has been consumed"
+                  defaultValueBoolean: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  remarks: "when the record was created"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            schemaName: public
+            cascadeConstraints: true
+            tableName: otp_code

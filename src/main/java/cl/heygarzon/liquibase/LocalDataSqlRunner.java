@@ -27,17 +27,21 @@ public class LocalDataSqlRunner implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
-    Resource resource = new ClassPathResource(DATA_SQL_PATH);
-    if (!resource.exists()) {
-      log.warn(
-          "Profile 'local' active but resource '{}' not found; skipping data.sql execution.",
-          DATA_SQL_PATH);
-      return;
+    boolean shouldLoadInitialData =
+        Boolean.parseBoolean(System.getProperty("feature-flags.load-initial-data"));
+    if (shouldLoadInitialData) {
+      Resource resource = new ClassPathResource(DATA_SQL_PATH);
+      if (!resource.exists()) {
+        log.warn(
+            "Profile 'local' active but resource '{}' not found; skipping data.sql execution.",
+            DATA_SQL_PATH);
+        return;
+      }
+      log.info("Executing local data script: {}", DATA_SQL_PATH);
+      ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
+      populator.setContinueOnError(false);
+      populator.execute(dataSource);
+      log.info("Local data script '{}' executed successfully.", DATA_SQL_PATH);
     }
-    log.info("Executing local data script: {}", DATA_SQL_PATH);
-    ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
-    populator.setContinueOnError(false);
-    populator.execute(dataSource);
-    log.info("Local data script '{}' executed successfully.", DATA_SQL_PATH);
   }
 }
