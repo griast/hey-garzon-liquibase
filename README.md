@@ -22,6 +22,8 @@ Módulo dedicado a la gestión de migraciones de base de datos para el proyecto 
 liquibase/
 ├── src/main/resources/
 │   ├── application.yaml           # Configuración de conexión
+│   ├── dbinit/
+│   │   └── data.sql               # Datos iniciales para local (solo con perfil "local")
 │   └── db
 │       ├── model.html                 # Diagrama ER (Mermaid)
 │       └── changelog
@@ -71,6 +73,14 @@ Al arrancar la aplicación, Spring Boot aplica automáticamente los changelogs p
 ./gradlew bootRun
 ```
 
+### Perfil local (datos iniciales)
+
+Con el perfil `local` activo, tras las migraciones se ejecuta el script `src/main/resources/dbinit/data.sql` en la base de datos (útil para datos de desarrollo). Activar con:
+
+```bash
+./gradlew bootRun --args='--spring.profiles.active=local'
+```
+
 ### Ejecutar tests
 
 ```bash
@@ -97,3 +107,30 @@ Ver `.cursor/skills/liquibase-change-types/SKILL.md` para detalles completos sob
 ## Diagrama ER
 
 Un diagrama del modelo entidad-relación está disponible en `src/main/resources/db/model.html`.
+
+```bash
+make show-diagram
+```
+
+## Issues 
+### Postgres Connection Issue
+
+```text
+FATAL: password authentication failed for user "postgres"
+```
+When `docker-compose.yaml` and `application.yaml` tienen la misma configuraciones de user, password y database name pero no es posible conectarse mediante `jdbc:postgresql://localhost:5432/postgres` se debe revisar la IP que entrega `colima status`
+
+```bash
+➜  liquibase git:(main) ✗ colima status    
+
+
+INFO[0000] colima is running using macOS Virtualization.Framework 
+INFO[0000] arch: aarch64                                
+INFO[0000] runtime: docker                              
+INFO[0000] mountType: virtiofs                          
+INFO[0000] address: 192.168.64.2 ## IP Colima                        
+INFO[0000] docker socket: unix:///Users/guspersonal/.colima/default/docker.sock 
+INFO[0000] containerd socket: unix:///Users/guspersonal/.colima/default/containerd.sock 
+```
+
+Connectar a la instancia de base de datos utilizando `jdbc:postgresql://192.168.64.2:5432/heygarzon`
