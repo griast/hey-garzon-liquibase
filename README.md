@@ -61,7 +61,6 @@ Variables de entorno (con valores por defecto):
 | `DATABASE_URL`     | JDBC URL de PostgreSQL         | `jdbc:postgresql://localhost:5432/heygarzon` |
 | `DATABASE_USERNAME`| Usuario de BD                  | `postgres`                            |
 | `DATABASE_PASSWORD`| Contraseña                     | `postgres`                            |
-| `LIQUIBASE_DROP_FIRST` | Eliminar y recrear BD antes de migrar | `false`           |
 
 ## Uso
 

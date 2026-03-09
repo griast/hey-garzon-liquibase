@@ -1,5 +1,3 @@
-feature-flags:
-  load-initial-data: ${FEATURE_FLAGS_LOAD_INITIAL_DATA:false}
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
@@ -11,4 +9,7 @@ spring:
     password: ${DATABASE_PASSWORD:postgres}
   liquibase:
     ## See  https://docs.spring.io/spring-boot/api/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseProperties.html for more details
-    dropFirst: ${LIQUIBASE_DROP_FIRST:false}
+    dropFirst: false
+db:
+  loadInitialData: false
+  dataSqlPath: dbinit/data.sql

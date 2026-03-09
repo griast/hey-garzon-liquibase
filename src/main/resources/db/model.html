@@ -19,6 +19,7 @@
     user ||--o{ user_role : "admin"
     role ||--o{ user_role : "assign a"
     business ||--|{ business_user : "has many"
+    business ||--o{ business_social_media : "has many"
     user ||--|{ business_user : "admin"
     business ||--o{ product : "has many"
     business ||--o{ category : "has many"
@@ -51,9 +52,17 @@
         uuid id pk
         uuid id_theme fk "theme id"
         text name "business name"
-        text phone "coma separated phones"
+        text address "business address"
+        text phones "comma separated phones"
         text mail "email address"
         text logo "logo url"
+    }
+
+    business_social_media {
+        uuid id pk
+        uuid id_business fk "business id"
+        text url "social media url"
+        text platform "social media platform"
     }
 
     business_user {

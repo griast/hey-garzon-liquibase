@@ -93,65 +93,61 @@ databaseChangeLog:
                   type: BOOLEAN
                   remarks: "enable the record"
                   defaultValueBoolean: true
+        - insert:
+            schemaName: public
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: name
+                  value: ROOT_ADMIN
+              - column:
+                  name: enabled
+                  valueBoolean: true
+        - insert:
+            schemaName: public
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: name
+                  value: SALES_AGENT
+              - column:
+                  name: enabled
+                  valueBoolean: true
+        - insert:
+            schemaName: public
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: name
+                  value: BUSINESS_ADMIN
+              - column:
+                  name: enabled
+                  valueBoolean: true
       rollback:
+        - delete:
+            schemaName: public
+            tableName: role
+            where: "name IN ('ROOT_ADMIN', 'SALES_AGENT', 'BUSINESS_ADMIN')"
         - dropTable:
             schemaName: public
             cascadeConstraints: true
             tableName: role
 
   - changeSet:
-      id: create-theme-table-v1.0.2
+      id: create-user-role-table-v1.0.2
       author: gustavo.alexis.ra@gmail.com
       changes:
         - tagDatabase:
             tag: v1.0.2
-        - createTable:
-            schemaName: public
-            tableName: theme
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  remarks: "theme unique ID"
-                  defaultValueComputed: "gen_random_uuid()"
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    unique: true
-              - column:
-                  name: name
-                  type: VARCHAR(255)
-                  remarks: "theme name"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: created_at
-                  type: TIMESTAMP
-                  remarks: "when the record was created"
-                  defaultValueComputed: "CURRENT_TIMESTAMP"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: updated_at
-                  type: TIMESTAMP
-                  remarks: "when the record was updated"
-              - column:
-                  name: enabled
-                  type: BOOLEAN
-                  remarks: "enable the record"
-                  defaultValueBoolean: true
-      rollback:
-        - dropTable:
-            schemaName: public
-            cascadeConstraints: true
-            tableName: theme
-
-  - changeSet:
-      id: create-user-role-table-v1.0.3
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.3
         - createTable:
             schemaName: public
             tableName: user_role
@@ -206,11 +202,85 @@ databaseChangeLog:
             tableName: user_role
 
   - changeSet:
-      id: create-business-table-v1.0.4
+      id: create-otp-code-table-v1.0.3
+      author: gustavo.alexis.ra@gmail.com
+      changes:
+        - tagDatabase:
+            tag: v1.0.3
+        - createTable:
+            schemaName: public
+            tableName: otp_code
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "otp_code unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: user_id
+                  type: UUID
+                  remarks: "user id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_otp_code_user
+                    referencedTableName: "user"
+                    referencedColumnNames: id
+              - column:
+                  name: otp_code
+                  type: VARCHAR(6)
+                  remarks: "6-character alphanumeric OTP code"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  remarks: "expiration timestamp in UTC"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_used
+                  type: BOOLEAN
+                  remarks: "whether the OTP has been consumed"
+                  defaultValueBoolean: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  remarks: "when the record was created"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            schemaName: public
+            cascadeConstraints: true
+            tableName: otp_code
+
+  - changeSet:
+      id: seed-user-admin-v1.0.4
       author: gustavo.alexis.ra@gmail.com
       changes:
         - tagDatabase:
             tag: v1.0.4
+        - sql:
+            sql: |
+              INSERT INTO public."user" (id, name, email, enabled) VALUES (gen_random_uuid(), 'Admin', 'user1@gmail.com', true);
+              INSERT INTO public.user_role (id, id_user, id_role, enabled) VALUES (gen_random_uuid(), (SELECT id FROM public."user" WHERE email = 'user1@gmail.com'), (SELECT id FROM public.role WHERE name = 'ROOT_ADMIN'), true);
+      rollback:
+        - sql:
+            sql: |
+              DELETE FROM public.user_role WHERE id_user IN (SELECT id FROM public."user" WHERE email = 'user1@gmail.com');
+              DELETE FROM public.user WHERE email = 'user1@gmail.com';
+  
+  - changeSet:
+      id: create-business-tables-v1.0.5
+      author: gustavo.alexis.ra@gmail.com
+      changes:
+        - tagDatabase:
+            tag: v1.0.5
         - createTable:
             schemaName: public
             tableName: business
@@ -225,22 +295,19 @@ databaseChangeLog:
                     primaryKey: true
                     unique: true
               - column:
-                  name: id_theme
-                  type: UUID
-                  remarks: "theme id"
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_business_theme
-                    referencedTableName: theme
-                    referencedColumnNames: id
-              - column:
                   name: name
                   type: VARCHAR(255)
                   remarks: "business name"
                   constraints:
                     nullable: false
               - column:
-                  name: phone
+                  name: address
+                  type: VARCHAR(255)
+                  remarks: "business address"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phones
                   type: VARCHAR(255)
                   remarks: "comma separated phones"
               - column:
@@ -267,18 +334,56 @@ databaseChangeLog:
                   type: BOOLEAN
                   remarks: "enable the record"
                   defaultValueBoolean: true
-      rollback:
-        - dropTable:
+        - createTable:
             schemaName: public
-            cascadeConstraints: true
-            tableName: business
-
-  - changeSet:
-      id: create-business-user-table-v1.0.5
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.5
+            tableName: business_social_media
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "business_social_media unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: id_business
+                  type: UUID
+                  remarks: "business id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_business_social_media_business
+                    referencedTableName: business
+                    referencedColumnNames: id
+              - column:
+                  name: url
+                  type: VARCHAR(500)
+                  remarks: "social media url"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: platform
+                  type: VARCHAR(255)
+                  remarks: "social media platform"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  remarks: "when the record was created"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "when the record was updated"
+              - column:
+                  name: enabled
+                  type: BOOLEAN
+                  remarks: "enable the record"
+                  defaultValueBoolean: true
         - createTable:
             schemaName: public
             tableName: business_user
@@ -331,267 +436,11 @@ databaseChangeLog:
             schemaName: public
             cascadeConstraints: true
             tableName: business_user
-
-  - changeSet:
-      id: create-category-table-v1.0.6
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.6
-        - createTable:
-            schemaName: public
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  remarks: "category unique ID"
-                  defaultValueComputed: "gen_random_uuid()"
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    unique: true
-              - column:
-                  name: id_business
-                  type: UUID
-                  remarks: "business id"
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_category_business
-                    referencedTableName: business
-                    referencedColumnNames: id
-              - column:
-                  name: index
-                  type: INT
-                  remarks: "position"
-              - column:
-                  name: created_at
-                  type: TIMESTAMP
-                  remarks: "when the record was created"
-                  defaultValueComputed: "CURRENT_TIMESTAMP"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: updated_at
-                  type: TIMESTAMP
-                  remarks: "when the record was updated"
-              - column:
-                  name: enabled
-                  type: BOOLEAN
-                  remarks: "enable the record"
-                  defaultValueBoolean: true
-      rollback:
         - dropTable:
             schemaName: public
             cascadeConstraints: true
-            tableName: category
-
-  - changeSet:
-      id: create-product-table-v1.0.7
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.7
-        - createTable:
-            schemaName: public
-            tableName: product
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  remarks: "product unique ID"
-                  defaultValueComputed: "gen_random_uuid()"
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    unique: true
-              - column:
-                  name: id_business
-                  type: UUID
-                  remarks: "business id"
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_product_business
-                    referencedTableName: business
-                    referencedColumnNames: id
-              - column:
-                  name: id_category
-                  type: UUID
-                  remarks: "category id"
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_product_category
-                    referencedTableName: category
-                    referencedColumnNames: id
-              - column:
-                  name: name_es
-                  type: VARCHAR(255)
-                  remarks: "spanish name"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: description_es
-                  type: TEXT
-                  remarks: "spanish description"
-              - column:
-                  name: ingredients_es
-                  type: TEXT
-                  remarks: "spanish ingredients"
-              - column:
-                  name: is_visible
-                  type: BOOLEAN
-                  remarks: "is visible on ui"
-                  defaultValueBoolean: true
-              - column:
-                  name: price
-                  type: DECIMAL(12, 2)
-                  remarks: "price CLP"
-              - column:
-                  name: image_url
-                  type: VARCHAR(500)
-                  remarks: "image url"
-              - column:
-                  name: created_at
-                  type: TIMESTAMP
-                  remarks: "when the record was created"
-                  defaultValueComputed: "CURRENT_TIMESTAMP"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: updated_at
-                  type: TIMESTAMP
-                  remarks: "when the record was updated"
-              - column:
-                  name: enabled
-                  type: BOOLEAN
-                  remarks: "enable the record"
-                  defaultValueBoolean: true
-      rollback:
+            tableName: business_social_media
         - dropTable:
             schemaName: public
             cascadeConstraints: true
-            tableName: product
-
-  - changeSet:
-      id: seed-roles-v1.0.8
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.8
-        - insert:
-            schemaName: public
-            tableName: role
-            columns:
-              - column:
-                  name: id
-                  valueComputed: "gen_random_uuid()"
-              - column:
-                  name: name
-                  value: ROOT_ADMIN
-              - column:
-                  name: enabled
-                  valueBoolean: true
-        - insert:
-            schemaName: public
-            tableName: role
-            columns:
-              - column:
-                  name: id
-                  valueComputed: "gen_random_uuid()"
-              - column:
-                  name: name
-                  value: SALES_AGENT
-              - column:
-                  name: enabled
-                  valueBoolean: true
-        - insert:
-            schemaName: public
-            tableName: role
-            columns:
-              - column:
-                  name: id
-                  valueComputed: "gen_random_uuid()"
-              - column:
-                  name: name
-                  value: BUSINESS_ADMIN
-              - column:
-                  name: enabled
-                  valueBoolean: true
-      rollback:
-        - delete:
-            schemaName: public
-            tableName: role
-            where: "name IN ('ROOT_ADMIN', 'SALES_AGENT', 'BUSINESS_ADMIN')"
-  - changeSet:
-      id: seed-user-admin-v1.0.9
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.9
-        - sql:
-            sql: |
-              INSERT INTO public."user" (id, name, email, enabled) VALUES (gen_random_uuid(), 'Admin', 'user1@gmail.com', true);
-              INSERT INTO public.user_role (id, id_user, id_role, enabled) VALUES (gen_random_uuid(), (SELECT id FROM public."user" WHERE email = 'user1@gmail.com'), (SELECT id FROM public.role WHERE name = 'ROOT_ADMIN'), true);
-      rollback:
-        - sql:
-            sql: |
-              DELETE FROM public.user_role WHERE id_user IN (SELECT id FROM public."user" WHERE email = 'user1@gmail.com');
-              DELETE FROM public.user WHERE email = 'user1@gmail.com';
-
-  - changeSet:
-      id: create-otp-code-table-v1.0.10
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.10
-        - createTable:
-            schemaName: public
-            tableName: otp_code
-            columns:
-              - column:
-                  name: id
-                  type: UUID
-                  remarks: "otp_code unique ID"
-                  defaultValueComputed: "gen_random_uuid()"
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    unique: true
-              - column:
-                  name: user_id
-                  type: UUID
-                  remarks: "user id"
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_otp_code_user
-                    referencedTableName: "user"
-                    referencedColumnNames: id
-              - column:
-                  name: otp_code
-                  type: VARCHAR(6)
-                  remarks: "6-character alphanumeric OTP code"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: expires_at
-                  type: TIMESTAMP WITH TIME ZONE
-                  remarks: "expiration timestamp in UTC"
-                  constraints:
-                    nullable: false
-              - column:
-                  name: is_used
-                  type: BOOLEAN
-                  remarks: "whether the OTP has been consumed"
-                  defaultValueBoolean: false
-              - column:
-                  name: created_at
-                  type: TIMESTAMP
-                  remarks: "when the record was created"
-                  defaultValueComputed: "CURRENT_TIMESTAMP"
-                  constraints:
-                    nullable: false
-      rollback:
-        - dropTable:
-            schemaName: public
-            cascadeConstraints: true
-            tableName: otp_code
+            tableName: business

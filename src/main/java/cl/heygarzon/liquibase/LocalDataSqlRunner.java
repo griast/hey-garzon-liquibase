@@ -3,6 +3,7 @@ package cl.heygarzon.liquibase;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
@@ -16,7 +17,12 @@ import org.springframework.stereotype.Component;
 @Order(org.springframework.core.Ordered.LOWEST_PRECEDENCE)
 public class LocalDataSqlRunner implements ApplicationRunner {
 
-  private static final String DATA_SQL_PATH = "dbinit/data.sql";
+  @Value("${db.loadInitialData}")
+  private boolean loadInitialData;
+
+  @Value("${db.dataSqlPath}")
+  private String dataSqlPath;
+
   private static final Logger log = LoggerFactory.getLogger(LocalDataSqlRunner.class);
 
   private final DataSource dataSource;
@@ -27,21 +33,19 @@ public class LocalDataSqlRunner implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
-    boolean shouldLoadInitialData =
-        Boolean.parseBoolean(System.getProperty("feature-flags.load-initial-data"));
-    if (shouldLoadInitialData) {
-      Resource resource = new ClassPathResource(DATA_SQL_PATH);
+    if (loadInitialData) {
+      Resource resource = new ClassPathResource(dataSqlPath);
       if (!resource.exists()) {
         log.warn(
             "Profile 'local' active but resource '{}' not found; skipping data.sql execution.",
-            DATA_SQL_PATH);
+            dataSqlPath);
         return;
       }
-      log.info("Executing local data script: {}", DATA_SQL_PATH);
+      log.info("Executing local data script: {}", dataSqlPath);
       ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
       populator.setContinueOnError(false);
       populator.execute(dataSource);
-      log.info("Local data script '{}' executed successfully.", DATA_SQL_PATH);
+      log.info("Local data script '{}' executed successfully.", dataSqlPath);
     }
   }
 }
