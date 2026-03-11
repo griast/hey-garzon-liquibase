@@ -40,16 +40,16 @@ El changelog actual define las siguientes tablas:
 | Tabla        | Descripción                                      |
 |--------------|--------------------------------------------------|
 | `user`       | Usuarios del sistema (name, email)               |
-| `role`       | Roles (ROOT_ADMIN, SALES_AGENT, BUSINESS_ADMIN)  |
+| `role`       | Roles (ROOT_ADMIN, SALES_AGENT, MANAGER)  |
 | `theme`      | Temas asociados a negocios                       |
 | `user_role`  | Relación N:N entre usuario y rol                 |
 | `business`   | Negocios (tema, nombre, teléfono, email, logo)   |
-| `business_user` | Relación usuario–negocio                      |
+| `business_manager` | Relación usuario–negocio (manager del negocio) |
 | `category`   | Categorías de productos por negocio              |
 | `product`    | Productos (nombre, descripción, precio, imagen)  |
 
 Además incluye datos iniciales:
-- Roles: `ROOT_ADMIN`, `SALES_AGENT`, `BUSINESS_ADMIN`
+- Roles: `ROOT_ADMIN`, `SALES_AGENT`, `MANAGER`
 - Usuario admin: `user1@gmail.com` con rol `ROOT_ADMIN`
 
 ## Configuración

@@ -128,7 +128,7 @@ databaseChangeLog:
                   valueComputed: "gen_random_uuid()"
               - column:
                   name: name
-                  value: BUSINESS_ADMIN
+                  value: MANAGER
               - column:
                   name: enabled
                   valueBoolean: true
@@ -136,7 +136,7 @@ databaseChangeLog:
         - delete:
             schemaName: public
             tableName: role
-            where: "name IN ('ROOT_ADMIN', 'SALES_AGENT', 'BUSINESS_ADMIN')"
+            where: "name IN ('ROOT_ADMIN', 'SALES_AGENT', 'MANAGER')"
         - dropTable:
             schemaName: public
             cascadeConstraints: true
@@ -386,12 +386,12 @@ databaseChangeLog:
                   defaultValueBoolean: true
         - createTable:
             schemaName: public
-            tableName: business_user
+            tableName: business_manager
             columns:
               - column:
                   name: id
                   type: UUID
-                  remarks: "business_user unique ID"
+                  remarks: "business_manager unique ID"
                   defaultValueComputed: "gen_random_uuid()"
                   constraints:
                     nullable: false
@@ -403,7 +403,7 @@ databaseChangeLog:
                   remarks: "user id"
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_business_user_user
+                    foreignKeyName: fk_business_manager_user
                     referencedTableName: "user"
                     referencedColumnNames: id
               - column:
@@ -412,7 +412,7 @@ databaseChangeLog:
                   remarks: "business id"
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_business_user_business
+                    foreignKeyName: fk_business_manager_business
                     referencedTableName: business
                     referencedColumnNames: id
               - column:
@@ -435,7 +435,7 @@ databaseChangeLog:
         - dropTable:
             schemaName: public
             cascadeConstraints: true
-            tableName: business_user
+            tableName: business_manager
         - dropTable:
             schemaName: public
             cascadeConstraints: true

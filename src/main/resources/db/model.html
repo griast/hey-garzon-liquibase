@@ -18,9 +18,9 @@
     erDiagram
     user ||--o{ user_role : "admin"
     role ||--o{ user_role : "assign a"
-    business ||--|{ business_user : "has many"
+    business ||--|{ business_manager : "has many"
     business ||--o{ business_social_media : "has many"
-    user ||--|{ business_user : "admin"
+    user ||--|{ business_manager : "manages"
     business ||--o{ product : "has many"
     business ||--o{ category : "has many"
     business ||--|{ theme : "choose a"
@@ -65,7 +65,7 @@
         text platform "social media platform"
     }
 
-    business_user {
+    business_manager {
         uuid id pk
         uuid id_user fk "user id"
         uuid id_business fk "business id"

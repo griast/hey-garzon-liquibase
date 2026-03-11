@@ -3,20 +3,20 @@ insert into "user" (name, email) values ('Paula Sales Agent', 'paula@example.com
 insert into "user" (name, email) values ('Carla Sales Agent', 'carla@example.com');
 insert into "user" (name, email) values ('Javier Sales Agent', 'javier@example.com');
 
-insert into "user" (name, email) values ('Roberto Business Admin', 'roberto@example.com');
-insert into "user" (name, email) values ('Nicolas Business Admin', 'nicolas@example.com');
-insert into "user" (name, email) values ('Martin Business Admin', 'martin@example.com');
-insert into "user" (name, email) values ('Sebastian Business Admin', 'sebastian@example.com');
+insert into "user" (name, email) values ('Roberto Manager', 'roberto@example.com');
+insert into "user" (name, email) values ('Nicolas Manager', 'nicolas@example.com');
+insert into "user" (name, email) values ('Martin Manager', 'martin@example.com');
+insert into "user" (name, email) values ('Sebastian Manager', 'sebastian@example.com');
 insert into "user" (name, email) values ('Amanda Root', 'amanda@example.com');
 
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Maria Sales Agent'), (select id from "role" where name = 'SALES_AGENT'));
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Paula Sales Agent'), (select id from "role" where name = 'SALES_AGENT'));
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Carla Sales Agent'), (select id from "role" where name = 'SALES_AGENT'));
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Javier Sales Agent'), (select id from "role" where name = 'SALES_AGENT'));
-insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Roberto Business Admin'), (select id from "role" where name = 'BUSINESS_ADMIN'));
-insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Nicolas Business Admin'), (select id from "role" where name = 'BUSINESS_ADMIN'));
-insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Martin Business Admin'), (select id from "role" where name = 'BUSINESS_ADMIN'));
-insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Sebastian Business Admin'), (select id from "role" where name = 'BUSINESS_ADMIN'));
+insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Roberto Manager'), (select id from "role" where name = 'MANAGER'));
+insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Nicolas Manager'), (select id from "role" where name = 'MANAGER'));
+insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Martin Manager'), (select id from "role" where name = 'MANAGER'));
+insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Sebastian Manager'), (select id from "role" where name = 'MANAGER'));
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Amanda Root'), (select id from "role" where name = 'ROOT_ADMIN'));
 
 
@@ -31,6 +31,6 @@ insert into "business_social_media" (id_business, url, platform) values ((select
 insert into "business_social_media" (id_business, url, platform) values ((select id from "business" where name = 'Business 3'), 'https://example.com/social5.png', 'FACEBOOK');
 insert into "business_social_media" (id_business, url, platform) values ((select id from "business" where name = 'Business 3'), 'https://example.com/social6.png', 'INSTAGRAM');
 
-insert into "business_user" (id_business, id_user) values ((select id from "business" where name = 'Business 1'), (select id from "user" where name = 'Roberto Business Admin'));
-insert into "business_user" (id_business, id_user) values ((select id from "business" where name = 'Business 2'), (select id from "user" where name = 'Nicolas Business Admin'));
-insert into "business_user" (id_business, id_user) values ((select id from "business" where name = 'Business 3'), (select id from "user" where name = 'Martin Business Admin'));
+insert into "business_manager" (id_business, id_user) values ((select id from "business" where name = 'Business 1'), (select id from "user" where name = 'Roberto Manager'));
+insert into "business_manager" (id_business, id_user) values ((select id from "business" where name = 'Business 2'), (select id from "user" where name = 'Nicolas Manager'));
+insert into "business_manager" (id_business, id_user) values ((select id from "business" where name = 'Business 3'), (select id from "user" where name = 'Martin Manager'));
