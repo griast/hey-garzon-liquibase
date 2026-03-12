@@ -15,6 +15,11 @@ Módulo dedicado a la gestión de migraciones de base de datos para el proyecto 
 - Java 21
 - PostgreSQL 14+ (o compatible)
 - Gradle
+- Docker
+- Gitleaks
+    ```bash
+    brew install gitleaks
+    ```
 
 ## Estructura del proyecto
 

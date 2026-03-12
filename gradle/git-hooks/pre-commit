@@ -1,6 +1,26 @@
 #!/bin/sh
 
 echo "Running Pre-commit hooks"
+# Check if gitleaks is installed
+if ! command -v gitleaks &> /dev/null; then
+    echo "WARNING: gitleaks is not installed. Skipping secrets detection."
+    echo "         Install with: brew install gitleaks (macOS) or visit https://github.com/gitleaks/gitleaks"
+else
+    echo "Running gitleaks to detect secrets..."
+    gitleaks protect --staged --verbose
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "ERROR: Gitleaks detected secrets in your code!"
+        echo "       Please remove sensitive data before committing."
+        echo "       If this is a false positive, you can:"
+        echo "       1. Add it to .gitleaksignore"
+        echo "       2. Use 'git commit --no-verify' (NOT recommended)"
+        exit 1
+    fi
+    echo "✓ No secrets detected"
+fi
+
+echo "Running quality gate checks..."
 ./gradlew qualityGate
 if [ $? -ne 0 ]; then
     echo "ERROR: Quality gate check failed."

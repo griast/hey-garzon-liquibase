@@ -1,0 +1,36 @@
+# Gitleaks configuration for quote-book-api
+# See https://github.com/gitleaks/gitleaks for more information
+
+title = "Gitleaks configuration for eCargo Quote & Book API"
+
+[extend]
+# Use the default gitleaks configuration as base
+useDefault = true
+
+[allowlist]
+description = "Allowlist for common false positives"
+paths = [
+    '''\.gradle/''',
+    '''build/''',
+    '''\.git/''',
+    '''\.idea/''',
+    '''gradlew''',
+    '''gradlew.bat''',
+]
+
+# Ignore test files with dummy credentials
+regexes = [
+    '''(?i)test.*password''',
+    '''(?i)example.*secret''',
+    '''(?i)dummy.*key''',
+]
+
+# Common false positives in Java/Spring Boot projects
+stopwords = [
+    "server",
+    "client",
+    "spring",
+    "config",
+    "application",
+    "localhost",
+]
