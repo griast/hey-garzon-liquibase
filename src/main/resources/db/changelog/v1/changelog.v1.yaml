@@ -444,3 +444,223 @@ databaseChangeLog:
             schemaName: public
             cascadeConstraints: true
             tableName: business
+
+  - changeSet:
+      id: create-category-product-tables-v1.0.6
+      author: gustavo.alexis.ra@gmail.com
+      changes:
+        - tagDatabase:
+            tag: v1.0.6
+        - createTable:
+            schemaName: public
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "category unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: id_business
+                  type: UUID
+                  remarks: "business id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_category_business
+                    referencedTableName: business
+                    referencedColumnNames: id
+              - column:
+                  name: display_index
+                  type: INTEGER
+                  remarks: "order for display in UI"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_visible
+                  type: BOOLEAN
+                  remarks: "whether category is visible to diners"
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  remarks: "when the record was created"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "when the record was updated"
+        - createTable:
+            schemaName: public
+            tableName: category_translation
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "category_translation unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: id_category
+                  type: UUID
+                  remarks: "category id"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: locale
+                  type: VARCHAR(5)
+                  remarks: "language code (es, en, pt)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  remarks: "category name in this locale"
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            schemaName: public
+            tableName: category_translation
+            columnNames: id_category, locale
+            constraintName: uk_category_translation_category_locale
+        - addForeignKeyConstraint:
+            baseTableSchemaName: public
+            baseTableName: category_translation
+            baseColumnNames: id_category
+            referencedTableSchemaName: public
+            referencedTableName: category
+            referencedColumnNames: id
+            constraintName: fk_category_translation_category
+            onDelete: CASCADE
+        - createTable:
+            schemaName: public
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "product unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: id_category
+                  type: UUID
+                  remarks: "category id"
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_product_category
+                    referencedTableName: category
+                    referencedColumnNames: id
+              - column:
+                  name: price
+                  type: DECIMAL(10,2)
+                  remarks: "price in CLP"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_visible
+                  type: BOOLEAN
+                  remarks: "whether product is visible to diners"
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_url
+                  type: VARCHAR(500)
+                  remarks: "product image URL"
+              - column:
+                  name: display_index
+                  type: INTEGER
+                  remarks: "order within category"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  remarks: "when the record was created"
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  remarks: "when the record was updated"
+        - createTable:
+            schemaName: public
+            tableName: product_translation
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  remarks: "product_translation unique ID"
+                  defaultValueComputed: "gen_random_uuid()"
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: id_product
+                  type: UUID
+                  remarks: "product id"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: locale
+                  type: VARCHAR(5)
+                  remarks: "language code (es, en, pt)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  remarks: "product name in this locale"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  remarks: "product description in this locale"
+        - addUniqueConstraint:
+            schemaName: public
+            tableName: product_translation
+            columnNames: id_product, locale
+            constraintName: uk_product_translation_product_locale
+        - addForeignKeyConstraint:
+            baseTableSchemaName: public
+            baseTableName: product_translation
+            baseColumnNames: id_product
+            referencedTableSchemaName: public
+            referencedTableName: product
+            referencedColumnNames: id
+            constraintName: fk_product_translation_product
+            onDelete: CASCADE
+      rollback:
+        - dropTable:
+            schemaName: public
+            cascadeConstraints: true
+            tableName: product_translation
+        - dropTable:
+            schemaName: public
+            cascadeConstraints: true
+            tableName: product
+        - dropTable:
+            schemaName: public
+            cascadeConstraints: true
+            tableName: category_translation
+        - dropTable:
+            schemaName: public
+            cascadeConstraints: true
+            tableName: category

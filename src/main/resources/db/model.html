@@ -21,10 +21,10 @@
     business ||--|{ business_manager : "has many"
     business ||--o{ business_social_media : "has many"
     user ||--|{ business_manager : "manages"
-    business ||--o{ product : "has many"
     business ||--o{ category : "has many"
-    business ||--|{ theme : "choose a"
-    category ||--o{ product : "group"
+    category ||--o{ category_translation : "i18n"
+    category ||--o{ product : "has many"
+    product ||--o{ product_translation : "i18n"
     
     user {
         uuid id pk
@@ -43,19 +43,14 @@
         uuid id_role fk "role id"
     }
 
-    theme {
-        uuid id pk
-        text name "theme name"
-    }
-
     business {
         uuid id pk
-        uuid id_theme fk "theme id"
         text name "business name"
         text address "business address"
         text phones "comma separated phones"
         text mail "email address"
         text logo "logo url"
+        bool enabled "enabled"
     }
 
     business_social_media {
@@ -72,21 +67,34 @@
     }
 
     category {
-        uuid id
+        uuid id pk
         uuid id_business fk "business id"
-        number index "position"
+        int display_index "order for UI"
+        bool is_visible "visible to diners"
     }
-    
-    product {
-        uuid id
-        uuid id_business fk "business id"
+
+    category_translation {
+        uuid id pk
         uuid id_category fk "category id"
-        text name_es "spanish name"
-        text description_es "spanish description"
-        text ingredients_es "spanish ingredients"
-        bool is_visible "is visible on ui"
-        number price "price CLP"
-        text image_url "image url"
+        text locale "es, en, pt"
+        text name "name in locale"
+    }
+
+    product {
+        uuid id pk
+        uuid id_category fk "category id"
+        decimal price "price CLP"
+        bool is_visible "visible to diners"
+        text image_url "image URL"
+        int display_index "order in category"
+    }
+
+    product_translation {
+        uuid id pk
+        uuid id_product fk "product id"
+        text locale "es, en, pt"
+        text name "name in locale"
+        text description "description in locale"
     }
 
    </div>

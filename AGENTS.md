@@ -61,6 +61,12 @@ Tipos de cambio, estructura YAML y patrones de rollback están documentados en *
 - Conexión por defecto: `jdbc:postgresql://localhost:5432/heygarzon` (override con `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`).
 - Con Colima/Docker: si falla la conexión a `localhost:5432`, usar la IP de Colima en `DATABASE_URL`, p. ej. `jdbc:postgresql://192.168.64.2:5432/heygarzon` (ver README sección "Postgres Connection Issue").
 
+## Convenciones Java (módulo api)
+
+| Regla | Detalle |
+|-------|---------|
+| **@AllArgsConstructor** | Utilizar siempre la anotación Lombok `@AllArgsConstructor` en servicios, controllers, use cases, adapters o clases con dependencias inyectadas, para evitar la definición manual de constructores. Excepciones: clases que extiendan excepciones (deben llamar a `super`), records y clases sin campos. |
+
 ## Guía para agentes
 
 1. **Nuevos changesets**: Crear en el archivo de changelog correspondiente a la versión (p. ej. `changelog.v1.yaml`), con ID, autor, `tagDatabase`, cambios y **rollback** según el skill de Liquibase.

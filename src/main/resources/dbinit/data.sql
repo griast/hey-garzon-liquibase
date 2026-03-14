@@ -34,3 +34,20 @@ insert into "business_social_media" (id_business, url, platform) values ((select
 insert into "business_manager" (id_business, id_user) values ((select id from "business" where name = 'Business 1'), (select id from "user" where name = 'Roberto Manager'));
 insert into "business_manager" (id_business, id_user) values ((select id from "business" where name = 'Business 2'), (select id from "user" where name = 'Nicolas Manager'));
 insert into "business_manager" (id_business, id_user) values ((select id from "business" where name = 'Business 3'), (select id from "user" where name = 'Martin Manager'));
+
+-- Categories and products for Business 1
+insert into category (id_business, display_index, is_visible) values ((select id from "business" where name = 'Business 1'), 0, true);
+insert into category_translation (id_category, locale, name) values ((select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0), 'es', 'Entradas');
+insert into category_translation (id_category, locale, name) values ((select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0), 'en', 'Starters');
+
+insert into category (id_business, display_index, is_visible) values ((select id from "business" where name = 'Business 1'), 1, true);
+insert into category_translation (id_category, locale, name) values ((select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 1), 'es', 'Platos principales');
+insert into category_translation (id_category, locale, name) values ((select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 1), 'en', 'Main courses');
+
+insert into product (id_category, price, is_visible, display_index) values ((select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0), 8990.00, true, 0);
+insert into product_translation (id_product, locale, name, description) values ((select id from product where id_category = (select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0) and display_index = 0), 'es', 'Pizza Margarita', 'Pizza con tomate, mozzarella y albahaca');
+insert into product_translation (id_product, locale, name, description) values ((select id from product where id_category = (select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0) and display_index = 0), 'en', 'Margherita Pizza', 'Pizza with tomato, mozzarella and basil');
+
+insert into product (id_category, price, is_visible, display_index) values ((select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0), 5990.00, true, 1);
+insert into product_translation (id_product, locale, name, description) values ((select id from product where id_category = (select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0) and display_index = 1), 'es', 'Ensalada César', 'Lechuga romana, crutones, parmesano y aderezo César');
+insert into product_translation (id_product, locale, name, description) values ((select id from product where id_category = (select id from category where id_business = (select id from "business" where name = 'Business 1') and display_index = 0) and display_index = 1), 'en', 'Caesar Salad', 'Romaine lettuce, croutons, parmesan and Caesar dressing');
