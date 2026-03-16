@@ -260,27 +260,11 @@ databaseChangeLog:
             tableName: otp_code
 
   - changeSet:
-      id: seed-user-admin-v1.0.4
+      id: create-business-tables-v1.0.6
       author: gustavo.alexis.ra@gmail.com
       changes:
         - tagDatabase:
-            tag: v1.0.4
-        - sql:
-            sql: |
-              INSERT INTO public."user" (id, name, email, enabled) VALUES (gen_random_uuid(), 'Admin', 'user1@gmail.com', true);
-              INSERT INTO public.user_role (id, id_user, id_role, enabled) VALUES (gen_random_uuid(), (SELECT id FROM public."user" WHERE email = 'user1@gmail.com'), (SELECT id FROM public.role WHERE name = 'ROOT_ADMIN'), true);
-      rollback:
-        - sql:
-            sql: |
-              DELETE FROM public.user_role WHERE id_user IN (SELECT id FROM public."user" WHERE email = 'user1@gmail.com');
-              DELETE FROM public.user WHERE email = 'user1@gmail.com';
-  
-  - changeSet:
-      id: create-business-tables-v1.0.5
-      author: gustavo.alexis.ra@gmail.com
-      changes:
-        - tagDatabase:
-            tag: v1.0.5
+            tag: v1.0.6
         - createTable:
             schemaName: public
             tableName: business
@@ -446,11 +430,11 @@ databaseChangeLog:
             tableName: business
 
   - changeSet:
-      id: create-category-product-tables-v1.0.6
+      id: create-category-product-tables-v1.0.7
       author: gustavo.alexis.ra@gmail.com
       changes:
         - tagDatabase:
-            tag: v1.0.6
+            tag: v1.0.7
         - createTable:
             schemaName: public
             tableName: category

@@ -1,13 +1,13 @@
-insert into "user" (name, email) values ('Maria Sales Agent', 'maria@example.com');
-insert into "user" (name, email) values ('Paula Sales Agent', 'paula@example.com');
-insert into "user" (name, email) values ('Carla Sales Agent', 'carla@example.com');
-insert into "user" (name, email) values ('Javier Sales Agent', 'javier@example.com');
+insert into "user" (name, email) values ('Maria Sales Agent', 'nHMGUv+2b/b35BwcXFNxkftjzVOySWNf7WL1gwk5IcA=');
+insert into "user" (name, email) values ('Paula Sales Agent', 'DA/oAmkMJoLHqZCBRoG8L0AS50grpED7qFkePv34604=');
+insert into "user" (name, email) values ('Carla Sales Agent', 'pxcZjdRFjB4s6CRzy31Dq3lGl8hrNGIeiEGyotwmykM=');
+insert into "user" (name, email) values ('Javier Sales Agent', 'EUVyiCSD/MogAuo4qEVfQgJsp2nmah5iB1r8ov5KMRQ=');
 
-insert into "user" (name, email) values ('Roberto Manager', 'roberto@example.com');
-insert into "user" (name, email) values ('Nicolas Manager', 'nicolas@example.com');
-insert into "user" (name, email) values ('Martin Manager', 'martin@example.com');
-insert into "user" (name, email) values ('Sebastian Manager', 'sebastian@example.com');
-insert into "user" (name, email) values ('Amanda Root', 'amanda@example.com');
+insert into "user" (name, email) values ('Roberto Manager', 'gUJK4F2Bfynt4N0axIr350ZqdOXHL/hL4ES+/tVHnhw=');
+insert into "user" (name, email) values ('Nicolas Manager', 'cTZsLLU9amiXt+l0Fh6gH/w5qWRIOw9ApaCCs+6XxGA=');
+insert into "user" (name, email) values ('Martin Manager', 'BeeGFjBO/NX4XtWYpcHYXDiKhyXmavogDTSsJdB7VC0=');
+insert into "user" (name, email) values ('Sebastian Manager', 'sCpc3TPqgEJQpR4VVwaanCzLAH+r99SSOjr7Vkrw4e8=');
+insert into "user" (name, email) values ('Amanda Root', 'XuNqMWm1x0pCn/tvZmqDJfmI2NI9YG+S0CByc9o11EE=');
 
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Maria Sales Agent'), (select id from "role" where name = 'SALES_AGENT'));
 insert into "user_role" (id_user, id_role) values ((select id from "user" where name = 'Paula Sales Agent'), (select id from "role" where name = 'SALES_AGENT'));
